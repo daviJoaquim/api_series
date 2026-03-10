@@ -1,3 +1,31 @@
-GET http://127.0.0.1:8000/soma/9009009?q=0 HTTP/1.1
+### Variáveis de ambiente
+@base_url = http://127.0.0.1:8000
 
-###
+### Teste de conexão com a API
+GET {{base_url}}/ HTTP/1.1
+Accept: application/json
+
+### Criaçã de uma série
+POST {{base_url}}/ HTTP/1.1
+Content-Type: application/json
+
+{
+    "titulo": "Rick and Morty",
+    "descricao": "Avô e neto em altas aventuras",
+    "ano_lancamento": 2013    
+}
+
+### Obtenção de todas as séries
+GET {{base_url}}/series HTTP/1.1
+Accept: application/json
+
+### Atualização das séries
+PUT {{base_url}}/atualizar HTTP/1.1
+Accept: application/json
+
+{
+    "titulo": "Água",
+    "descricao": "Molhada",
+    "ano_lancamento": 1000
+    
+}
