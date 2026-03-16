@@ -1,7 +1,7 @@
 from unittest import result
 
 from fastapi import APIRouter, Depends, HTTPException, status 
-from httpx import get
+from sqlalchemy import Update
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.serie import SerieModel
@@ -21,12 +21,17 @@ async def criar_serie(dados: SerieSchema, db: Session = Depends(get_db)):
 async def listar_series(db:Session = Depends(get_db)):
     return db.query(SerieModel).all()
 
-@serie.put('/update/{id}')
-async def atualizar_serie(id: int, titulo: str, descricao: str, ano_lancamento: int):
-    results = {'titulo': titulo, 'descrição': descricao, "Ano Lançamento": ano_lancamento}
-    db.commit()
-    db.refresh
-    return results
+@serie.put("/update/{id}")
+async def atualizar_series(id: int, dados: SerieSchema ,db:Session= Depends(get_db)):
+   serie = db.query(SerieModel).filter(SerieModel.id == id).first()
+
+   if not serie:
+            return("Série não foi encontrada")
+   
+   db.query(SerieModel).filter(SerieModel.id == id).update(dados.model_dump(exclude_unset=True))
+   db.commit()
+   return (dados)
+
 
 @serie.delete("/deletar/{id}")
 async def deletar_series(id: int, db:Session= Depends(get_db)):
@@ -37,8 +42,6 @@ async def deletar_series(id: int, db:Session= Depends(get_db)):
     db.delete(id)
     db.commit()
     return("Deletado")
-
-
 
 
 
